@@ -38,6 +38,7 @@ int parse_parameters(int argn, char **argv,
 	struct arg_lit *disable_reduction   = arg_lit0(NULL, "disable_reduction", "Don't perforn any reductions.");
     struct arg_str *weight_source       = arg_str0(NULL, "weight_source", NULL, "Choose how the weights are assigned. Can be either: file (default), hybrid, uniform, geometric.");
     struct arg_str *reduction_style      = arg_str0(NULL, "reduction_style", NULL, "Choose the type of reductions appropriate for the input graph. Can be either: normal/sparse (default), dense/osm.");
+    struct arg_lit *print_events        = arg_lit0(NULL, "print_events", "Save and print all events (new MIS found).");
 
     struct arg_end *end                 = arg_end(100);
 
@@ -54,6 +55,7 @@ int parse_parameters(int argn, char **argv,
 			//disable_reduction,
             weight_source,
             reduction_style,
+            print_events,
             end
     };
 
@@ -123,6 +125,10 @@ int parse_parameters(int argn, char **argv,
         mis_config.write_graph = true;
     } else {
         mis_config.write_graph = false;
+    }
+
+    if (print_events->count > 0) {
+        mis_config.print_events = true;
     }
 
     arg_freetable(argtable, sizeof(argtable) / sizeof(argtable[0]));

@@ -33,3 +33,6 @@
 docs/*
 deploy
 optimized
+graphs/*
+build/*
+mmwis/build/*

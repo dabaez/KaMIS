@@ -26,7 +26,7 @@ def convert_to_metis(filename):
             if "cf" in args or "co" in args or "c" in args:
                 continue
             if len(args) == 4:
-                type, source, target, omit = args
+                type, omit, source, target = args
             else:
                 type, source, target = args
             if type == "p":

@@ -62,6 +62,7 @@ int parse_parameters(int argn, char **argv,
     struct arg_lit *disable_critical_set = arg_lit0(NULL, "disable_critical_set", "Disable critical set reduction.");
     struct arg_lit *disable_clique_neighborhood = arg_lit0(NULL, "disable_clique_neighborhood", "Disable clique_neighborhood reduction.");
     struct arg_lit *disable_generalized_neighborhood = arg_lit0(NULL, "disable_generalized_neighborhood", "Disable generalized neighborhood reduction.");
+    struct arg_lit *print_events       = arg_lit0(NULL, "print_events", "Print events during the evolutionary algorithm.");
 
     // for struction
     struct arg_int *use_struction_initial_sol = arg_int0(NULL, "use_struction_initial_sol",NULL, "use struction for given initial solution additionally.");
@@ -113,6 +114,7 @@ int parse_parameters(int argn, char **argv,
             reduction_style,
             use_struction_initial_sol,
             fraction,
+            print_events,
             end
     };
 
@@ -288,6 +290,10 @@ int parse_parameters(int argn, char **argv,
 
     if (fraction->count > 0) {
         mis_config.fraction = 0.01 * fraction->dval[0];
+    }
+
+    if (print_events->count > 0) {
+        mis_config.print_events = true;
     }
 
     arg_freetable(argtable, sizeof(argtable) / sizeof(argtable[0]));

@@ -44,13 +44,15 @@ int parse_parameters(int argn, char **argv, MISConfig &mis_config,
       arg_lit0(NULL, "disable_checks", "Disable sortedness check during I/O.");
   struct arg_lit *adaptive_greedy =
       arg_lit0(NULL, "adaptive_greedy", "Use adaptive greedy solution");
+  struct arg_lit *print_events =
+      arg_lit0(NULL, "print_events", "Save and print all events (new MIS found).");
 
   struct arg_end *end = arg_end(100);
 
   // Setup the argtable
   void *argtable[] = {help,      filename,        output,      user_seed,
                       time_limit,      console_log, disable_checks,
-                      adaptive_greedy, end};
+                      adaptive_greedy, print_events, end};
 
   // Choose standard configuration
   configuration_mis cfg;
@@ -96,6 +98,10 @@ int parse_parameters(int argn, char **argv, MISConfig &mis_config,
   mis_config.check_sorted = disable_checks->count > 0;
 
   mis_config.start_greedy_adaptive = adaptive_greedy->count > 0;
+
+  if (print_events->count > 0) {
+    mis_config.print_events = true;
+  }
 
   if (output->count > 0) {
     mis_config.output_filename = output->sval[0];

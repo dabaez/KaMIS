@@ -5,6 +5,7 @@
 #pragma once
 
 #include <sstream>
+#include <vector>
 
 #include "definitions.h"
 #include "timer.h"
@@ -326,6 +327,8 @@ class mmwis_log {
         double time_for_building_pool;
         double time_since_building_pool;
 
+        std::vector<double> event_times;
+        std::vector<int> event_best;
 
         /**
          * Default Constructor.

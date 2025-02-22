@@ -214,6 +214,16 @@ void mmwis_log::print_results() {
                                         << multiway_improv << "\t\t\t\t" 
                                         << avg_multiway_time << "\t\t"                            
                                         << avg_multiway_improv                                  << std::endl;
+    if (log_config.print_events){
+        filebuffer_string << std::endl;
+        filebuffer_string << "\t\tEvents" << std::endl;
+        filebuffer_string << "==========================================" << std::endl;
+        filebuffer_string << "Event\t\tBest\tTime" << std::endl;
+        filebuffer_string << "------------------------------------------" << std::endl;
+        for (unsigned int i = 0; i < event_times.size(); i++) {
+            filebuffer_string << "Event #" << i+1 << ":\t" << event_best[i] << "\t" << event_times[i] << std::endl;
+        }
+    }
     filebuffer_string << std::endl;
     filebuffer_string << "\t\tBest"                                                             << std::endl;
     filebuffer_string << "==========================================="                          << std::endl;
@@ -252,6 +262,16 @@ void mmwis_log::print_results() {
                                 << multiway_improv << "\t\t" 
                                 << avg_multiway_time << "\t\t"                            
                                 << avg_multiway_improv                                  << std::endl;
+    if (log_config.print_events){
+        std::cout << std::endl;
+        std::cout << "\t\tEvents" << std::endl;
+        std::cout << "==========================================" << std::endl;
+        std::cout << "Event\t\tBest\tTime" << std::endl;
+        std::cout << "------------------------------------------" << std::endl;
+        for (unsigned int i = 0; i < event_times.size(); i++) {
+            std::cout << "Event #" << i+1 << ":\t" << event_best[i] << "\t" << event_times[i] << std::endl;
+        }
+    }
     std::cout << std::endl;
     std::cout << "\t\tBest"                                                             << std::endl;
     std::cout << "==========================================="                          << std::endl;
@@ -405,6 +425,10 @@ void mmwis_log::reset_best_size() {
 void mmwis_log::set_best_weight(mmwis::MISConfig & mis_config, NodeWeight  weight) {
     best_solution_weight = weight;
     if (best_solution_weight > optimum_weight) {
+        if (mis_config.print_events){
+            event_best.push_back(best_solution_weight);
+            event_times.push_back(total_timer.elapsed());
+        }
         print_repetition(mis_config);
         optimum_weight = best_solution_weight;
         time_taken_best = total_timer.elapsed();

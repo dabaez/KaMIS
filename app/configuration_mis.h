@@ -107,6 +107,7 @@ inline void configuration_mis::standard( MISConfig & mis_config ) {
     mis_config.print_population                       = false;
     mis_config.console_log                            = false;
     mis_config.check_sorted                           = true;
+    mis_config.print_events                           = false;
     // ILS
     mis_config.ils_iterations                         = 15000;
     mis_config.force_k                                = 1;

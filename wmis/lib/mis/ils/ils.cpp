@@ -11,6 +11,7 @@
 #include "greedy_mis.h"
 #include "data_structure/operation_log.h"
 #include "random_functions.h"
+#include "mis_log.h"
 
 ils::ils(const MISConfig& config) : config(config), local(config) {
     // Set config parameters
@@ -63,6 +64,8 @@ void ils::perform_ils(graph_access& G, unsigned int iteration_limit, int offset)
 			best_solution_size++;
 		}
 	} endfor
+
+    mis_log::instance()->set_best_size(config,best_solution_size+offset);
 	
 
     // Initialize "friends".
@@ -189,6 +192,7 @@ void ils::perform_ils(graph_access& G, unsigned int iteration_limit, int offset)
                 best_solution[node] = G.getPartitionIndex(node);
             } endfor
             best_solution_size = perm->get_solution_size();
+            mis_log::instance()->set_best_size(config,best_solution_size+offset);
 			best_solution_weight = solution_weight_after;
             plateau = plateau_best * perm->get_solution_size();
         } 
@@ -238,6 +242,7 @@ void ils::perform_ils(graph_access& G, unsigned int iteration_limit, int offset)
                                 best_solution[node] = G.getPartitionIndex(node);
                             } endfor
 							best_solution_size = perm->get_solution_size();
+                            mis_log::instance()->set_best_size(config,best_solution_size+offset);
 							best_solution_weight = perm->get_solution_weight();
                             plateau = plateau_best * perm->get_solution_size();
                         }

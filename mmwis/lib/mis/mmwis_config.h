@@ -156,6 +156,8 @@ struct MISConfig {
     Reduction_Style reduction_style;
     // Choose struction reduction order
     StructionReduction_Style struction_reduction_style;
+    // Print events
+    bool print_events;
 
     // for struction
     Struction_Type struction_type;

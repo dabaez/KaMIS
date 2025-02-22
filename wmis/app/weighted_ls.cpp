@@ -69,8 +69,10 @@ bool is_IS(graph_access& G) {
 
 std::vector<NodeID> reverse_mapping;
 NodeWeight perform_reduction(std::unique_ptr<branch_and_reduce_algorithm>& reducer, graph_access& G, graph_access& rG, const MISConfig& config) {
+	mis_log::instance()->supress_best_size();
 	reducer = std::unique_ptr<branch_and_reduce_algorithm>(new branch_and_reduce_algorithm(G, config));
 	reducer->reduce_graph();
+	mis_log::instance()->release_best_size();
 
 	// Retrieve reduced graph
 	reverse_mapping = std::vector<NodeID>(G.number_of_nodes(), 0);
@@ -86,7 +88,7 @@ NodeWeight perform_reduction(std::unique_ptr<branch_and_reduce_algorithm>& reduc
 	return is_weight;
 }
 
-void perform_ils(const MISConfig& mis_config, graph_access& G, NodeWeight weight_offset) {
+void perform_ils(MISConfig& mis_config, graph_access& G, NodeWeight weight_offset) {
 	ils local(mis_config);
 	initial_is(G);
 	local.perform_ils(G, 1000000, weight_offset);
@@ -103,6 +105,8 @@ void perform_ils(const MISConfig& mis_config, graph_access& G, NodeWeight weight
 			is_weight += G.getNodeWeight(node);
 		}
 	} endfor
+
+	mis_log::instance()->set_best_size(mis_config, is_weight);
 
 	std::cout << "MIS_weight " << is_weight << std::endl;
 }
@@ -212,6 +216,7 @@ int main(int argn, char **argv) {
 		if (rG.number_of_nodes() != 0) {
 			perform_ils(mis_config, rG, weight_offset);
 		} else {
+			mis_log::instance()->set_best_size(mis_config, weight_offset);
 			std::cout << "MIS_weight " << weight_offset << std::endl;
 		}
 
@@ -240,6 +245,8 @@ int main(int argn, char **argv) {
 	}
 
         if (mis_config.write_graph) graph_io::writeIndependentSet(G, mis_config.output_filename);
+
+	mis_log::instance()->print_results();
 
     return 0;
 }

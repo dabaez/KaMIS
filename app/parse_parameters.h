@@ -46,6 +46,7 @@ int parse_parameters(int argn, char **argv,
     struct arg_dbl *time_limit          = arg_dbl0(NULL, "time_limit", NULL, "Time limit in s. Default 1000s.");
     struct arg_lit *console_log         = arg_lit0(NULL, "console_log", "Stream the log into the console");
     struct arg_lit *disable_checks      = arg_lit0(NULL, "disable_checks", "Disable sortedness check during I/O.");
+    struct arg_lit *print_events        = arg_lit0(NULL, "print_events", "Save and print all events (new MIS found).");
 
     // Reduction
     // struct arg_dbl *best_degree_frac    = arg_dbl0(NULL, "best_degree_frac", NULL, "Fraction of degree nodes to remove before reduction.");
@@ -69,6 +70,7 @@ int parse_parameters(int argn, char **argv,
             red_thres,
             time_limit, 
             console_log,
+            print_events,
             // best_degree_frac,
             disable_checks,
             end
@@ -154,6 +156,10 @@ int parse_parameters(int argn, char **argv,
         mis_config.print_log = false;
     } else {
         mis_config.print_log = true;
+    }
+
+    if (print_events->count > 0) {
+        mis_config.print_events = true;
     }
 
     if (disable_checks->count > 0) {

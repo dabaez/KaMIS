@@ -17,6 +17,7 @@ mis_log::mis_log() {
     total_time_taken = 0.0;
     time_taken_best = 0.0;
     optimum_size = 0;
+    supressors = 0;
 }
 
 mis_log::~mis_log() {
@@ -112,10 +113,30 @@ void mis_log::print_reduction(MISConfig & mis_config, unsigned int extracted_nod
 }
 
 void mis_log::print_results() {
+    if (log_config.print_events){
+        filebuffer_string << std::endl;
+        filebuffer_string << "\t\tEvents" << std::endl;
+        filebuffer_string << "==========================================" << std::endl;
+        filebuffer_string << "Event\t\tBest\tTime" << std::endl;
+        filebuffer_string << "------------------------------------------" << std::endl;
+        for (unsigned int i = 0; i < event_times.size(); i++) {
+            filebuffer_string << "Event #" << i+1 << ":\t" << event_best[i] << "\t" << event_times[i] << std::endl;
+        }
+    }
     filebuffer_string << std::endl;
     filebuffer_string << "\t\tStatistics"                                                          << std::endl;
     filebuffer_string << "=========================================="                           << std::endl;
     filebuffer_string << "Total time:\t\t\t\t"       << total_timer.elapsed()                   << std::endl;
+    if (log_config.print_events){
+        std::cout << std::endl;
+        std::cout << "\t\tEvents" << std::endl;
+        std::cout << "==========================================" << std::endl;
+        std::cout << "Event\t\tBest\tTime" << std::endl;
+        std::cout << "------------------------------------------" << std::endl;
+        for (unsigned int i = 0; i < event_times.size(); i++) {
+            std::cout << "Event #" << i+1 << ":\t" << event_best[i] << "\t" << event_times[i] << std::endl;
+        }
+    }
     std::cout << std::endl;
     std::cout << "\t\tBest"                                                             << std::endl;
     std::cout << "=========================================="                           << std::endl;
@@ -139,13 +160,29 @@ void mis_log::restart_total_timer() {
 }
 
 void mis_log::reset_best_size() {
+    event_times.clear();
+    event_best.clear();
     optimum_size = 0;
 }
 
 void mis_log::set_best_size(MISConfig & mis_config, unsigned int size) {
+    if (supressors > 0) return;
     if (size > optimum_size) {
+        if (mis_config.print_events){
+            event_best.push_back(size);
+            event_times.push_back(total_timer.elapsed());
+        }
         optimum_size = size;
         time_taken_best = total_timer.elapsed();
     }
 }
 
+void mis_log::supress_best_size() {
+    supressors++;
+}
+
+void mis_log::release_best_size() {
+    if (supressors > 0) {
+        supressors--;
+    }
+}

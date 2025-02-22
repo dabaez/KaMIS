@@ -95,6 +95,8 @@ struct MISConfig {
     bool check_sorted;
     // Use adaptive greedy starting solution
     bool start_greedy_adaptive;
+    // Print events
+    bool print_events;
 };
 
 #endif

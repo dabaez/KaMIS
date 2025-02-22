@@ -93,6 +93,7 @@ int main(int argn, char **argv) {
 
         branch_and_reduce_algorithm reducer(G, mis_config);
         reducer.run_branch_reduce();
+        mis_log::instance()->print_results();
         NodeWeight MWIS_weight = reducer.get_current_is_weight();
 
         auto end = std::chrono::system_clock::now();

@@ -7,6 +7,7 @@
 #define _MIS_LOG_H_
 
 #include <sstream>
+#include <vector>
 
 #include "timer.h"
 #include "mis_config.h"
@@ -101,6 +102,16 @@ class mis_log {
          */
         void reset_best_size();
 
+        /**
+         * Supress set_best_size.
+         */
+        void supress_best_size();
+
+        /**
+         * Release the supression of set_best_size.
+         */
+        void release_best_size();
+
     private:
         // General information
         timer total_timer;
@@ -122,6 +133,10 @@ class mis_log {
         // Results information
         double total_time_taken;
         double time_taken_best;
+
+        unsigned int supressors;
+        std::vector<double> event_times;
+        std::vector<int> event_best;
 
         /**
          * Default Constructor.

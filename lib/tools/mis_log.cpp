@@ -47,6 +47,8 @@ mis_log::mis_log() {
     time_since_building_pool = 0.0;
     current_is_size = 0;
     optimum_size = 0;
+    event_times.clear();
+    event_best.clear();
 }
 
 mis_log::~mis_log() {
@@ -226,6 +228,16 @@ void mis_log::print_repetition(MISConfig & mis_config) {
 }
 
 void mis_log::print_results_online() {
+  if (log_config.print_events){
+    filebuffer_string << std::endl;
+    filebuffer_string << "\t\tEvents" << std::endl;
+    filebuffer_string << "==========================================" << std::endl;
+    filebuffer_string << "Event\t\tBest\tTime" << std::endl;
+    filebuffer_string << "------------------------------------------" << std::endl;
+    for (unsigned int i = 0; i < event_times.size(); i++) {
+        filebuffer_string << "Event #" << i+1 << ":\t" << event_best[i] << "\t" << event_times[i] << std::endl;
+    }
+  }
   filebuffer_string << std::endl;
   filebuffer_string << "\t\tBest" << std::endl;
   filebuffer_string << "=========================================="
@@ -234,6 +246,16 @@ void mis_log::print_results_online() {
   filebuffer_string << "Time found:\t\t\t\t" << time_taken_best << std::endl;
   filebuffer_string << std::endl;
 
+  if (log_config.print_events){
+    std::cout << std::endl;
+    std::cout << "\t\tEvents" << std::endl;
+    std::cout << "==========================================" << std::endl;
+    std::cout << "Event\t\tBest\tTime" << std::endl;
+    std::cout << "------------------------------------------" << std::endl;
+    for (unsigned int i = 0; i < event_times.size(); i++) {
+        std::cout << "Event #" << i+1 << ":\t" << event_best[i] << "\t" << event_times[i] << std::endl;
+    }
+  }
   std::cout << std::endl;
   std::cout << "\t\tBest" << std::endl;
   std::cout << "==========================================" << std::endl;
@@ -269,6 +291,16 @@ void mis_log::print_results() {
                                         << multiway_improv << "\t\t\t\t" 
                                         << avg_multiway_time << "\t"                            
                                         << avg_multiway_improv                                  << std::endl;
+    filebuffer_string << std::endl;
+    if (log_config.print_events){
+        filebuffer_string << "\t\tEvents" << std::endl;
+        filebuffer_string << "==========================================" << std::endl;
+        filebuffer_string << "Event\t\tBest\tTime" << std::endl;
+        filebuffer_string << "------------------------------------------" << std::endl;
+        for (unsigned int i = 0; i < event_times.size(); i++) {
+            filebuffer_string << "Event #" << i+1 << ":\t" << event_best[i] << "\t" << event_times[i] << std::endl;
+        }
+    }
     filebuffer_string << std::endl;
     filebuffer_string << "\t\tBest"                                                             << std::endl;
     filebuffer_string << "=========================================="                           << std::endl;
@@ -306,6 +338,16 @@ void mis_log::print_results() {
                                 << multiway_improv << "\t\t" 
                                 << avg_multiway_time << "\t"                            
                                 << avg_multiway_improv                                  << std::endl;
+    std::cout << std::endl;
+    if (log_config.print_events){
+        std::cout << "\t\tEvents" << std::endl;
+        std::cout << "==========================================" << std::endl;
+        std::cout << "Event\t\tBest\tTime" << std::endl;
+        std::cout << "------------------------------------------" << std::endl;
+        for (unsigned int i = 0; i < event_times.size(); i++) {
+            std::cout << "Event #" << i+1 << ":\t" << event_best[i] << "\t" << event_times[i] << std::endl;
+        }
+    }
     std::cout << std::endl;
     std::cout << "\t\tBest"                                                             << std::endl;
     std::cout << "=========================================="                           << std::endl;
@@ -381,6 +423,10 @@ void mis_log::restart_building_pool_timer() {
 }
 
 void mis_log::set_best_size_online(MISConfig &mis_config, unsigned int size) {
+  if (mis_config.print_events && (event_best.size() == 0 || event_best.back() < size) ){
+    event_best.push_back(size);
+    event_times.push_back(online_timer.elapsed());
+  }
   if (size > best_solution_size) {
     best_solution_size = size;
     time_taken_best = online_timer.elapsed();
@@ -458,11 +504,17 @@ void mis_log::set_avg_solution_size(double avg_size) {
 }
 
 void mis_log::reset_best_size() {
+    event_times.clear();
+    event_best.clear();
     optimum_size = 0;
 }
 
 void mis_log::set_best_size(MISConfig & mis_config, unsigned int size) {
     best_solution_size = size;
+    if (mis_config.print_events && size && (event_best.size() == 0 || event_best.back() < size) ){
+        event_best.push_back(size);
+        event_times.push_back(evo_timer.elapsed());
+    }
     if (best_solution_size > optimum_size) {
         print_repetition(mis_config);
         optimum_size = best_solution_size;
@@ -472,4 +524,3 @@ void mis_log::set_best_size(MISConfig & mis_config, unsigned int size) {
         round_best = number_of_rounds;
     }
 }
-

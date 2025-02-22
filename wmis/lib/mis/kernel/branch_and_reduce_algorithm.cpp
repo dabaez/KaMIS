@@ -6,6 +6,7 @@
 #include "ils/local_search.h"
 #include "strongly_connected_components.h"
 #include "graph_extractor.h"
+#include "mis_log.h"
 
 #include <algorithm>
 #include <chrono>
@@ -458,14 +459,17 @@ bool branch_and_reduce_algorithm::branch_reduce_recursive() {
 }
 
 void branch_and_reduce_algorithm::branch_reduce_single_component() {
+	mis_log::instance()->supress_best_size();
 	best_weight = 0;
 
 	if (status.n == 0) {
+		mis_log::instance()->release_best_size();
 		return;
 	}
 	else if (status.n == 1) {
 		set(0, IS_status::included);
 		std::cout << (get_current_is_weight() + status.is_weight + status.reduction_offset) << " [" << t.elapsed() << "]" << std::endl;
+		mis_log::instance()->release_best_size();
 		return;
 	}
 
@@ -489,6 +493,9 @@ void branch_and_reduce_algorithm::branch_reduce_single_component() {
 
 	size_t i = 0;
 	while (i < status.n) {
+		mis_log::instance()->release_best_size();
+		mis_log::instance()->set_best_size(config, get_current_is_weight()+best_weight);
+		mis_log::instance()->supress_best_size();
 		if (t.elapsed() > config.time_limit && best_weight != 0) {
 			timeout = true;
 			break;
@@ -564,11 +571,18 @@ void branch_and_reduce_algorithm::branch_reduce_single_component() {
 	}
 
 	restore_best_local_solution();
+
+	mis_log::instance()->release_best_size();
 }
 
 bool branch_and_reduce_algorithm::run_branch_reduce() {
+
+	mis_log::instance()->supress_best_size();
+
 	t.restart();
 	initial_reduce();
+
+	mis_log::instance()->release_best_size();
 
 	//std::cout << "%reduction_nodes " << global_status.remaining_nodes << "\n";
 	//std::cout << "%reduction_offset " << global_status.is_weight + global_status.reduction_offset << "\n";
@@ -613,6 +627,9 @@ bool branch_and_reduce_algorithm::run_branch_reduce() {
 	buffers.resize(7, sized_vector<NodeID>(global_status.n));
 
 	for (size_t i : comp_idx) {
+
+		mis_log::instance()->set_best_size(config, get_current_is_weight());
+
 		if (t.elapsed() > config.time_limit) {
 			timeout = true;
 			break;
@@ -648,6 +665,8 @@ bool branch_and_reduce_algorithm::run_branch_reduce() {
 		std::cout << "%timeout" << std::endl;
 		fill_global_greedy();
 	}
+
+	mis_log::instance()->set_best_size(config,get_current_is_weight());
 
 	restore_best_global_solution();
 	return !timeout;

@@ -50,6 +50,8 @@ struct MISConfig {
     Weight_Source weight_source;
     // Choose reduction order and amount for given graph type
     Reduction_Style reduction_style;
+    // Print events
+    bool print_events;
 
 
     void setReductionStyle(const std::string & redu_style) {
