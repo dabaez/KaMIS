@@ -28,7 +28,9 @@ cd ..
 
 mkdir deploy
 cp ./build/mmwis                                                         deploy/mmwis
-cp ./build/extern/struction/branch_reduce_convergence                    deploy/struction
+if [ -f ./build/extern/struction/branch_reduce_convergence ]; then
+        cp ./build/extern/struction/branch_reduce_convergence                    deploy/struction
+fi
 # rm -rf build
 
 
