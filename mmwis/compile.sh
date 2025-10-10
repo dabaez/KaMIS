@@ -19,7 +19,7 @@ fi
 # compile mmwis and hils
 
 rm -rf deploy
-# rm -rf build
+rm -rf build
 mkdir build
 cd build
 cmake ../ -DCMAKE_C_COMPILER=$(which gcc) -DCMAKE_CXX_COMPILER=$(which g++) -DCMAKE_BUILD_TYPE=${buildtype}
@@ -31,6 +31,6 @@ cp ./build/mmwis                                                         deploy/
 if [ -f ./build/extern/struction/branch_reduce_convergence ]; then
         cp ./build/extern/struction/branch_reduce_convergence                    deploy/struction
 fi
-# rm -rf build
+rm -rf build
 
 
