@@ -146,6 +146,7 @@ if(STRUCTION_ENABLE_APPS)
     add_subdirectory(extern/struction)
 else()
     add_subdirectory(extern/struction EXCLUDE_FROM_ALL)
+endif()
 
 add_executable(mmwis "app/mmwis.cpp" $<TARGET_OBJECTS:libkaffpa> 
                                      $<TARGET_OBJECTS:libmapping> 
