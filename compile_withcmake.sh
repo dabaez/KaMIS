@@ -26,7 +26,9 @@ cd ..
 
 mkdir deploy
 cp ./mmwis/deploy/mmwis deploy/
-cp ./mmwis/deploy/struction deploy/
+if [ -f ./mmwis/deploy/struction ]; then
+        cp ./mmwis/deploy/struction deploy/
+fi
 cp ./build/redumis deploy/
 cp ./build/graphchecker deploy/
 cp ./build/sort_adjacencies deploy/
