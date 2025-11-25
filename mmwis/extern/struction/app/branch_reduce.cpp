@@ -149,5 +149,9 @@ int main(int argn, char **argv) {
     }
 #endif
 
+    if (mis_config.write_graph) {
+        graph_io::writePartition(G, mis_config.output_filename);
+    }
+
     return 0;
 }
